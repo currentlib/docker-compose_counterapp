@@ -1,0 +1,38 @@
+version: '3.7'
+services: 
+  
+  server:
+    image: artshoque/counter_app:01
+    volumes:
+    - storage:/flask/logs
+    networks:
+    - public
+    - secret
+
+  redis:
+    image: redis:alpine
+    volumes:
+    - redis-data:/data
+    networks:
+    - secret
+
+  loadbalancer:
+    build: loadbalancer
+    ports:
+    - "8000:80"
+    links:
+    - server
+    networks:
+    - public
+
+volumes:
+  storage:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  public:
+    driver: bridge
+  secret:
+    driver: bridge
